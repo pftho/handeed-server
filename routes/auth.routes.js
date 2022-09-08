@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const router = express.Router();
 const saltRound = 10;
+const { isAuthenticated } = require('../middleware/jwt.middleware');
 
 // SIGNUP - POST
 router.post('/signup', (req, res) => {
@@ -120,7 +121,7 @@ router.post('/login', (req, res) => {
 });
 
 // VERIFY - POST
-router.post('/verify', (req, res) => {
+router.post('/verify', isAuthenticated, (req, res) => {
     res.status(200).json(req.payload);
 });
 
