@@ -122,7 +122,6 @@ router.post('/login', (req, res) => {
 
 // VERIFY - POST
 router.get('/verify', isAuthenticated, (req, res) => {
-    console.log(req.payload);
     res.status(200).json(req.payload);
 });
 
