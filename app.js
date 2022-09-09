@@ -27,6 +27,9 @@ app.use('/auth', authRoutes);
 const profileRoute = require('./routes/profile.routes');
 app.use('/api', isAuthenticated, profileRoute);
 
+const adRoutes = require("./routes/ad.routes");
+app.use("/ads", adRoutes);
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);
 
