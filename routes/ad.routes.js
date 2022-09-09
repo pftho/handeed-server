@@ -5,24 +5,36 @@ const mongoose = require('mongoose');
 const Ad = require('../models/Ad.model');
 const User = require('../models/User.model');
 
-router.get('/list', (req, res) => {
-    // if (
-    //     req.headers.authorization &&
-    //     req.headers.authorization.split('')[1] !== 'null'
-    // ) {
+const { isAuthenticated, isOwner } = require("../middleware/jwt.middleware")
+const fileUploader = require("../config/cloudinary.config");
+
+router.get('/', (req, res) => {
+    if (
+        req.headers.authorization &&
+        req.headers.authorization.split('')[1] !== 'null'
+    ) {
         Ad.find()
             //.populate('user')
             .then((ads) => res.json(ads))
             .catch((err) => res.json(err));
-    // } else {
-    //     Ad.find()
-    //         .populate('user')
-    //         .then((ads) => res.json(ads.slice(0, 9)))
-    //         .catch((err) => res.json(err));
-    // }
+    } else {
+        Ad.find()
+            //.populate('user')
+            .then((ads) => res.json(ads.slice(0, 9)))
+            .catch((err) => res.json(err));
+    }
 });
 
-router.post('/list', (req, res) => {
+router.post("/upload", fileUploader.single("image"), (req, res, next) => {
+    if (!req.file) {
+      next(new Error("No file uploaded!"));
+      return;
+    }
+    res.json({ fileUrl: req.file.path });
+  });
+
+
+router.post('/', (req, res) => {
     const {
         title,
         description,
@@ -52,7 +64,7 @@ router.post('/list', (req, res) => {
         .catch((err) => res.json(err));
 });
 
-router.get('/list/:adId', (req, res) => {
+router.get('/:adId', (req, res) => {
     const { adId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(adId)) {
@@ -66,7 +78,7 @@ router.get('/list/:adId', (req, res) => {
         .catch((error) => res.json(error));
 });
 
-router.put('/list/:adId', (req, res) => {
+router.put('/:adId/edit', isOwner, (req, res) => {
     const { adId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(adId)) {
@@ -80,7 +92,7 @@ router.put('/list/:adId', (req, res) => {
         .catch((error) => res.json(error));
 });
 
-router.delete('/list/:adId', (req, res) => {
+router.delete('/:adId', isAuthenticated, isOwner, (req, res) => {
     const { adId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(adId)) {
