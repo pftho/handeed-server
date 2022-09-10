@@ -22,7 +22,12 @@ const userSchema = new Schema(
         address: String,
         messages: [{ type: Schema.Types.ObjectId, ref: 'Messages' }],
         credentials: Number,
+        imageUrl: {
+            type: String,
+            default: 'https://i.stack.imgur.com/34AD2.jpg',
+        },
     },
+
     {
         timestamps: true,
     }
