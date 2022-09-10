@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "seed": "node seeds/ads.seeds.js"
+    "seed": "node seeds/ads.seeds.js && node seeds/user.seeds.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

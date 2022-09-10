@@ -29,6 +29,14 @@ const userSchema = new Schema(
             type: String,
             default: 'https://i.stack.imgur.com/34AD2.jpg',
         },
+        location: {
+            type: {
+                type: String,
+            },
+            coordinates: {
+                type: [Number],
+            },
+        },
     },
 
     {
