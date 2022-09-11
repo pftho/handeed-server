@@ -76,12 +76,12 @@ router.put('/user/:userId', (req, res) => {
         .catch((err) => console.log(err));
 });
 
-router.put('/user/location', async (req, res) => {
+router.get('/location', async (req, res) => {
     const lat = req.query.lat;
     const lng = req.query.lng;
     const radius = req.query.rad ? parseInt(req.query.rad) : 5000;
 
-    if (lat.length === 0 || lng.length === 0) {
+    if (lat.length === 0 || lng.length === 0 ) {
         res.send('Wrong parameters');
     }
 
@@ -95,6 +95,10 @@ router.put('/user/location', async (req, res) => {
                 },
             },
         },
+    });
+
+    res.json({
+        ...users,
     });
 });
 

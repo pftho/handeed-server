@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 const Ad = require('../models/Ad.model');
 const User = require('../models/User.model');
 
-const { isAuthenticated, isOwner } = require("../middleware/jwt.middleware")
-const fileUploader = require("../config/cloudinary.config");
+const { isAuthenticated, isOwner } = require('../middleware/jwt.middleware');
+const fileUploader = require('../config/cloudinary.config');
 
 router.get('/', (req, res) => {
     if (
@@ -14,25 +14,24 @@ router.get('/', (req, res) => {
         req.headers.authorization.split('')[1] !== 'null'
     ) {
         Ad.find()
-            //.populate('user')
+            .populate('user')
             .then((ads) => res.json(ads))
             .catch((err) => res.json(err));
     } else {
         Ad.find()
-            //.populate('user')
+            .populate('user')
             .then((ads) => res.json(ads.slice(0, 9)))
             .catch((err) => res.json(err));
     }
 });
 
-router.post("/upload", fileUploader.single("image"), (req, res, next) => {
+router.post('/upload', fileUploader.single('image'), (req, res, next) => {
     if (!req.file) {
-      next(new Error("No file uploaded!"));
-      return;
+        next(new Error('No file uploaded!'));
+        return;
     }
     res.json({ fileUrl: req.file.path });
-  });
-
+});
 
 router.post('/', (req, res) => {
     const {
@@ -43,7 +42,7 @@ router.post('/', (req, res) => {
         category,
         condition,
         status,
-        owner,
+        user,
         city,
         image,
     } = req.body;
@@ -56,7 +55,7 @@ router.post('/', (req, res) => {
         category,
         condition,
         status,
-        owner,
+        user,
         city,
         image,
     })
@@ -71,9 +70,8 @@ router.get('/:adId', (req, res) => {
         res.status(400).json({ message: 'Specified id is not valid' });
         return;
     }
-
     Ad.findById(adId)
-        //.populate('user')
+        .populate('user')
         .then((ad) => res.status(200).json(ad))
         .catch((error) => res.json(error));
 });
@@ -87,7 +85,7 @@ router.put('/:adId/edit', isOwner, (req, res) => {
     }
 
     Ad.findByIdAndUpdate(adId)
-        //.populate('user')
+        .populate('user')
         .then((ad) => res.status(200).json(ad))
         .catch((error) => res.json(error));
 });

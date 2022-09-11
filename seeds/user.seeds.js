@@ -4,6 +4,7 @@ const User = require('../models/User.model');
 
 const users = [
     {
+        _id: '631d230ccab84d0906e126c9',
         username: 'plr',
         email: 'plr@gmail.com',
         password: 'test',
@@ -17,6 +18,7 @@ const users = [
         },
     },
     {
+        _id: '631d230ccab84d0906e126ca',
         username: 'pft',
         email: 'pft@gmail.com',
         password: 'test',
