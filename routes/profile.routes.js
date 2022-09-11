@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const User = require('../models/user.model');
+const User = require('../models/User.model');
 const router = express.Router();
 const { isAuthenticated } = require('../middleware/jwt.middleware');
 const fileUploader = require('../config/cloudinary.config');
@@ -74,6 +74,32 @@ router.put('/user/:userId', (req, res) => {
             }
         )
         .catch((err) => console.log(err));
+});
+
+router.get('/location', async (req, res) => {
+    const lat = req.query.lat;
+    const lng = req.query.lng;
+    const radius = req.query.rad ? parseInt(req.query.rad) : 5000;
+
+    if (lat.length === 0 || lng.length === 0 ) {
+        res.send('Wrong parameters');
+    }
+
+    const users = await User.find({
+        location: {
+            $near: {
+                $maxDistance: radius,
+                $geometry: {
+                    type: 'Point',
+                    coordinates: [lng, lat],
+                },
+            },
+        },
+    });
+
+    res.json({
+        ...users,
+    });
 });
 
 module.exports = router;
