@@ -50,6 +50,18 @@ module.exports = (app) => {
     server.listen(5006);
 
     io.on('connection', (socket) => {
-        console.log('a user connected');
-    });
+        console.log(`a user connected: ${socket.id}`);
+        socket.on('join_room', (data) => {
+            socket.join(data); //data = id of the room we joining
+        });
+
+        socket.on(
+            'send_message_to_another_event_front_side',
+            ({ username, message }) => {
+                socket
+                    .to(data.room)
+                    .emit('recieve_message_from_back ', { username, message });
+            }
+        );
+    }); // listening to the events
 };
