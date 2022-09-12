@@ -8,6 +8,7 @@ const User = require('../models/User.model');
 
 const { isAuthenticated, isOwner } = require('../middleware/jwt.middleware');
 const fileUploader = require('../config/cloudinary.config');
+const { response } = require('../app');
 
 router.get('/', (req, res) => {
     if (
@@ -68,14 +69,14 @@ router.post('/', isAuthenticated, (req, res) => {
         city,
         image,
     })
-        .then((response) => {
-            console.log('response', response);
-            User.findByIdAndUpdate(owner, {
-                $push: { ads: response._id },
-            });
-            return res.json(response);
+        .then((newAd) => {
+            console.log('newAd', newAd);
+             User.findByIdAndUpdate({_id: owner}, {
+                $push: { ads: newAd._id},
+            }).exec()
         })
-        .catch((err) => res.json(err));
+        .then(() => res.status(201).json({ message: 'ad has successfully been created' }))
+        .catch(() => res.status(500).json({ message: 'error when creating the ad' }));
 });
 
 router.get('/:adId', (req, res) => {
