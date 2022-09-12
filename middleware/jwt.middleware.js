@@ -21,7 +21,7 @@ const isAuthenticated = jwt({
 });
 
 const isOwner = (req, res, next) => {
-    if (!req.session.currentUser._id === req.params.adId) {
+    if (!user.ads.includes(req.params.adId)) {
         res.redirect('/ads');
     }
     next();
