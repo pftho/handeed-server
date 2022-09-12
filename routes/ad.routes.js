@@ -53,7 +53,7 @@ router.post('/', isAuthenticated, (req, res) => {
         city,
         image,
     } = req.body;
-    
+
     console.log(owner);
 
     Ad.create({
@@ -68,14 +68,12 @@ router.post('/', isAuthenticated, (req, res) => {
         city,
         image,
     })
-        .then((newAd) => {
-            return User.findByIdAndUpdate(owner, {
-                $push: {ads: newAd._id}
-            })
-        })
         .then((response) => {
             console.log('response', response);
-            res.json(response);
+            User.findByIdAndUpdate(owner, {
+                $push: { ads: response._id },
+            });
+            return res.json(response);
         })
         .catch((err) => res.json(err));
 });
