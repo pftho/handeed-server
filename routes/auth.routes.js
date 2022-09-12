@@ -86,6 +86,7 @@ router.post('/login', (req, res) => {
 
     //User in DB check
     User.findOne({ email })
+        //.populate('ads')
         .then((foundUser) => {
             if (!foundUser) {
                 res.status(400).json({

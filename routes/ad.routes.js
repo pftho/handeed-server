@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+// const ObjectID = require('mongodb').ObjectID
 
 const Ad = require('../models/Ad.model');
 const User = require('../models/User.model');
@@ -14,26 +15,32 @@ router.get('/', (req, res) => {
         req.headers.authorization.split('')[1] !== 'null'
     ) {
         Ad.find()
-            .populate('user')
+            .populate('owner')
             .then((ads) => res.json(ads))
             .catch((err) => res.json(err));
     } else {
         Ad.find()
-            .populate('user')
+            .populate('owner')
             .then((ads) => res.json(ads.slice(0, 9)))
             .catch((err) => res.json(err));
     }
 });
 
-router.post('/upload', fileUploader.single('image'), (req, res, next) => {
-    if (!req.file) {
-        next(new Error('No file uploaded!'));
-        return;
+router.post(
+    '/upload',
+    fileUploader.single('image'),
+    isAuthenticated,
+    (req, res, next) => {
+        if (!req.file) {
+            next(new Error('No file uploaded!'));
+            return;
+        }
+        res.json({ fileUrl: req.file.path });
     }
-    res.json({ fileUrl: req.file.path });
-});
+);
 
-router.post('/', (req, res) => {
+router.post('/', isAuthenticated, (req, res) => {
+    console.log(req.body);
     const {
         title,
         description,
@@ -42,10 +49,12 @@ router.post('/', (req, res) => {
         category,
         condition,
         status,
-        user,
+        owner,
         city,
         image,
     } = req.body;
+    
+    console.log(owner);
 
     Ad.create({
         title,
@@ -55,11 +64,19 @@ router.post('/', (req, res) => {
         category,
         condition,
         status,
-        user,
+        owner: mongoose.Types.ObjectId(owner),
         city,
         image,
     })
-        .then((response) => res.json(response))
+        .then((newAd) => {
+            return User.findByIdAndUpdate(owner, {
+                $push: {ads: newAd._id}
+            })
+        })
+        .then((response) => {
+            console.log('response', response);
+            res.json(response);
+        })
         .catch((err) => res.json(err));
 });
 
@@ -71,12 +88,12 @@ router.get('/:adId', (req, res) => {
         return;
     }
     Ad.findById(adId)
-        .populate('user')
+        .populate('owner')
         .then((ad) => res.status(200).json(ad))
         .catch((error) => res.json(error));
 });
 
-router.put('/:adId/edit', isOwner, (req, res) => {
+router.put('/:adId/edit', isAuthenticated, (req, res) => {
     const { adId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(adId)) {
@@ -84,13 +101,13 @@ router.put('/:adId/edit', isOwner, (req, res) => {
         return;
     }
 
-    Ad.findByIdAndUpdate(adId)
-        .populate('user')
+    Ad.findByIdAndUpdate(adId, req.body, { new: true })
+        .populate('owner')
         .then((ad) => res.status(200).json(ad))
         .catch((error) => res.json(error));
 });
 
-router.delete('/:adId', isAuthenticated, isOwner, (req, res) => {
+router.delete('/:adId', isAuthenticated, (req, res) => {
     const { adId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(adId)) {

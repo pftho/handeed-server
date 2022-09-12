@@ -49,7 +49,7 @@ const adSchema = new Schema(
             enum: ['Available', 'Reserved', 'Given'],
             required: true,
         },
-        user: { type: Schema.Types.ObjectId, ref: 'User' },
+        owner: { type: Schema.Types.ObjectId, ref: 'User' },
         city: {
             type: String,
             required: true,
