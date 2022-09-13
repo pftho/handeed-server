@@ -1,14 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-// const ObjectID = require('mongodb').ObjectID
-
 const Ad = require('../models/Ad.model');
 const User = require('../models/User.model');
 
-const { isAuthenticated, isOwner } = require('../middleware/jwt.middleware');
+const { isAuthenticated } = require('../middleware/jwt.middleware');
 const fileUploader = require('../config/cloudinary.config');
-const { response } = require('../app');
 
 router.get('/', (req, res) => {
     if (
@@ -37,11 +34,9 @@ router.post(
             return;
         }
         res.json({ fileUrl: req.file.path });
-    }
-);
+});
 
 router.post('/', isAuthenticated, (req, res) => {
-    console.log(req.body);
     const {
         title,
         description,
@@ -54,8 +49,6 @@ router.post('/', isAuthenticated, (req, res) => {
         city,
         image,
     } = req.body;
-
-    console.log(owner);
 
     Ad.create({
         title,
