@@ -15,9 +15,20 @@ router.get('/user/:userId', (req, res) => {
     }
 
     User.findById(userId)
+        .populate('ads')
         .then(
-            ({ _id, username, email, reviews, address, credits, imageUrl }) => {
+            ({
+                _id,
+                ads,
+                username,
+                email,
+                reviews,
+                address,
+                credits,
+                imageUrl,
+            }) => {
                 res.status(200).json({
+                    ads,
                     id: _id,
                     username,
                     email,
@@ -60,16 +71,19 @@ router.put('/user/:userId', (req, res) => {
         credits,
         imageUrl,
     })
-        .then(({ username, email, reviews, address, credits, imageUrl }) => {
-            res.status(200).json({
-                username,
-                email,
-                reviews,
-                address,
-                credits,
-                imageUrl,
-            });
-        })
+        .then(
+            ({ username, email, reviews, address, credits, imageUrl, ads }) => {
+                res.status(200).json({
+                    username,
+                    ads,
+                    email,
+                    reviews,
+                    address,
+                    credits,
+                    imageUrl,
+                });
+            }
+        )
         .catch((err) => console.log(err));
 });
 
