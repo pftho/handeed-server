@@ -68,6 +68,7 @@ router.post('/signup', (req, res) => {
                         username,
                         email,
                         password: hashedPassword,
+                        address,
                         location: {
                             type: 'Point',
                             coordinates: await convertAddress(),

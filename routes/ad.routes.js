@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
 const Ad = require('../models/Ad.model');
 const User = require('../models/User.model');
 
@@ -63,8 +62,14 @@ router.post('/', isAuthenticated, (req, res) => {
         city,
         image,
     })
-        .then((response) => res.json(response))
-        .catch((err) => res.json(err));
+        .then((newAd) => {
+            console.log('newAd', newAd);
+             User.findByIdAndUpdate({_id: owner}, {
+                $push: { ads: newAd._id},
+            }).exec()
+        })
+        .then(() => res.status(201).json({ message: 'ad has successfully been created' }))
+        .catch(() => res.status(500).json({ message: 'error when creating the ad' }));
 });
 
 router.get('/:adId', (req, res) => {
