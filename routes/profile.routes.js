@@ -40,7 +40,7 @@ router.get('/user/:userId', (req, res) => {
 });
 
 //POST - Uploads profile image in DB
-router.post('/upload', fileUploader.single('imageUrl'), (req, res) => {
+router.post('/upload', fileUploader.single('imageUrl'), (req, res, next) => {
     console.log('file is: ', req.file);
 
     if (!req.file) {
@@ -81,7 +81,7 @@ router.get('/location', async (req, res) => {
     const lng = req.query.lng;
     const radius = req.query.rad ? parseInt(req.query.rad) : 5000;
 
-    if (lat.length === 0 || lng.length === 0 ) {
+    if (lat.length === 0 || lng.length === 0) {
         res.send('Wrong parameters');
     }
 

@@ -24,7 +24,6 @@ module.exports = (app) => {
         cors({
             credentials: true,
             origin: process.env.ORIGIN || 'http://localhost:3001',
-            methods: ['GET', 'POST'],
         })
     );
 
