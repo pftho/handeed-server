@@ -20,14 +20,8 @@ const isAuthenticated = jwt({
     getToken: getTokenFromHeaders,
 });
 
-const isOwner = (req, res, next) => {
-    if (!user.ads.includes(req.params.adId)) {
-        res.redirect('/ads');
-    }
-    next();
-};
 
 module.exports = {
     isAuthenticated,
-    isOwner,
+    //isOwner,
 };

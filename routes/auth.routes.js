@@ -5,13 +5,14 @@ const User = require('../models/User.model');
 const router = express.Router();
 const saltRound = 10;
 const { isAuthenticated } = require('../middleware/jwt.middleware');
+const axios = require('axios');
 
 // SIGNUP - POST
 router.post('/signup', (req, res) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, address } = req.body;
 
     //check if all fields are completed
-    if (username === '' || email === '' || password === '') {
+    if (username === '' || email === '' || password === '' || address === '') {
         res.status(400).json({ message: 'All fields are mandatory' });
         return;
     }
@@ -31,6 +32,13 @@ router.post('/signup', (req, res) => {
         return;
     }
 
+    const convertAddress = async () => {
+        const MAPBOX_URL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?limit=1&types=place%2Cpostcode%2Caddress&access_token=${process.env.MAPBOX_TOKEN}`;
+        const response = await axios.get(MAPBOX_URL);
+        const coordinates = response.data.features[0].center
+        return coordinates;
+    };
+
     //user in DB check
     User.findOne({ email })
         .then((foundUserEmail) => {
@@ -44,7 +52,7 @@ router.post('/signup', (req, res) => {
         })
         .then(
             User.findOne({ username })
-                .then((foundUsername) => {
+                .then(async (foundUsername) => {
                     if (foundUsername) {
                         res.status(400).json({
                             message: 'User name already in use',
@@ -56,15 +64,22 @@ router.post('/signup', (req, res) => {
                     const salt = bcrypt.genSaltSync(saltRound);
                     const hashedPassword = bcrypt.hashSync(password, salt);
 
-                    return User.create({
+                    const userCreated = {
                         username,
                         email,
                         password: hashedPassword,
-                    });
+                        address,
+                        location: {
+                            type: 'Point',
+                            coordinates: await convertAddress(),
+                        },
+                    };
+                    
+                    return User.create(userCreated);
                 })
                 .then((newUser) => {
-                    const { email, username, _id } = newUser;
-                    const user = { email, username, _id };
+                    const { email, username, _id, address } = newUser;
+                    const user = { email, username, _id, address };
                     res.status(200).json({ user: user });
                 })
         )
