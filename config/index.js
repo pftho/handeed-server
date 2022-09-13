@@ -47,7 +47,6 @@ module.exports = (app) => {
             origin: '*',
         },
     });
-    server.listen(5006);
 
     io.on('connection', (socket) => {
         socket.on('join_room', (data) => {
@@ -56,7 +55,7 @@ module.exports = (app) => {
         });
 
         socket.on('send_message', (data) => {
-            console.log(data.room);
+            console.log(data);
             socket.to(data.room).emit('receive_message', data);
         });
 
@@ -64,4 +63,5 @@ module.exports = (app) => {
             console.log('Disconnected', socket.id);
         });
     });
+    server.listen(5006);
 };
