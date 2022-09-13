@@ -24,6 +24,7 @@ router.get('/user/:userId', (req, res) => {
                 address,
                 credentials,
                 imageUrl,
+                ads
             }) => {
                 res.status(200).json({
                     id: _id,
@@ -33,6 +34,7 @@ router.get('/user/:userId', (req, res) => {
                     address,
                     credentials,
                     imageUrl,
+                    ads
                 });
             }
         )
@@ -62,7 +64,7 @@ router.put('/user/:userId', (req, res) => {
 
     User.findByIdAndUpdate(userId, { imageUrl })
         .then(
-            ({ username, email, reviews, address, credentials, imageUrl }) => {
+            ({ username, email, reviews, address, credentials, imageUrl, ads }) => {
                 res.status(200).json({
                     username,
                     email,
@@ -70,6 +72,7 @@ router.put('/user/:userId', (req, res) => {
                     address,
                     credentials,
                     imageUrl,
+                    ads
                 });
             }
         )
