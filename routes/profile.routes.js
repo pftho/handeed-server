@@ -26,7 +26,6 @@ router.get('/user/:userId', (req, res) => {
                 address,
                 credits,
                 imageUrl,
-                ads
             }) => {
                 res.status(200).json({
                     ads,
@@ -37,7 +36,6 @@ router.get('/user/:userId', (req, res) => {
                     address,
                     credits,
                     imageUrl,
-                    ads
                 });
             }
         )
