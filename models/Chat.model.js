@@ -4,19 +4,16 @@ const chatSchema = new Schema(
     {
         chatname: {
             type: String,
-            unique: true,
             required: [true, 'chatname is required'],
         },
         sender: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            unique: true,
             required: true,
         },
         receiver: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            unique: true,
             required: true,
         },
         ad: { type: Schema.Types.ObjectId, ref: 'Ad' },
