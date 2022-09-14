@@ -12,6 +12,7 @@ const cookieParser = require('cookie-parser');
 // ℹ️ Needed to accept from requests from 'the outside'. CORS stands for cross origin resource sharing
 // unless the request if from the same domain, by default express wont accept POST requests
 const cors = require('cors');
+const { resourceLimits } = require('worker_threads');
 
 // Middleware configuration
 module.exports = (app) => {
@@ -46,16 +47,32 @@ module.exports = (app) => {
             origin: '*',
         },
     });
-
+    const Chat = require('../models/Chat.model');
     io.on('connection', (socket) => {
-        socket.on('join_room', (data) => {
-            socket.join(data);
-            console.log(`a user connected: ${socket.id} joined room: ${data}`);
+        //listen
+        socket.on('join_room', (room) => {
+            socket.join(room);
+            console.log(`a user connected: ${socket.id} joined room: ${room}`);
+
+            Chat.findById(room).then((foundRoom) => {
+                socket.emit('sync_messages', foundRoom.messages);
+                console.log(foundRoom.messages);
+            });
+            // get in db, chat.findbyid(data), if messages in the chat:
+            // create a new even -> sync_messages -> send full list of messages from the chat
+            //front side needs to listen and set the chat to listen for it -> il faudra listen pour faire un setchat
         });
 
         socket.on('send_message', (data) => {
-            console.log(data);
             socket.to(data.room).emit('receive_message', data);
+            Chat.findByIdAndUpdate(
+                { _id: data.room },
+                {
+                    $push: { messages: data },
+                }
+            ).exec();
+
+            //uodate it to add messages
         });
 
         socket.on('disconnect', () => {

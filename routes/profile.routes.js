@@ -7,7 +7,6 @@ const fileUploader = require('../config/cloudinary.config');
 
 //GET - Display user Info
 router.get('/user/:userId', (req, res) => {
-    console.log(req.params);
     const { userId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
         res.status(400).json({ message: 'Specified id is not valid' });
@@ -44,8 +43,6 @@ router.get('/user/:userId', (req, res) => {
 
 //POST - Uploads profile image in DB
 router.post('/upload', fileUploader.single('imageUrl'), (req, res, next) => {
-    console.log('file is: ', req.file);
-
     if (!req.file) {
         next(new Error('No file uploaded!'));
         return;
