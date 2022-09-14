@@ -11,7 +11,7 @@ const users = [
         ads: [],
         reviews: [],
         messages: [],
-        credentials: 3,
+        credits: 3,
         location: {
             type: 'Point',
             coordinates: [2.34181, 48.84681],
@@ -25,7 +25,7 @@ const users = [
         ads: [],
         reviews: [],
         messages: [],
-        credentials: 3,
+        credits: 3,
         location: {
             type: 'Point',
             coordinates: [2.34189, 48.84689],

@@ -15,24 +15,27 @@ router.get('/user/:userId', (req, res) => {
     }
 
     User.findById(userId)
+        .populate('ads')
         .then(
             ({
                 _id,
+                ads,
                 username,
                 email,
                 reviews,
                 address,
-                credentials,
+                credits,
                 imageUrl,
                 ads
             }) => {
                 res.status(200).json({
+                    ads,
                     id: _id,
                     username,
                     email,
                     reviews,
                     address,
-                    credentials,
+                    credits,
                     imageUrl,
                     ads
                 });
@@ -56,21 +59,30 @@ router.post('/upload', fileUploader.single('imageUrl'), (req, res, next) => {
 //PUT - Edit user Info
 router.put('/user/:userId', (req, res) => {
     const { userId } = req.params;
-    const { imageUrl } = req.body;
+    const { username, email, reviews, address, credits, imageUrl } = req.body;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
         res.status(400).json({ message: 'Specified id is not valid' });
         return;
     }
 
-    User.findByIdAndUpdate(userId, { imageUrl })
+    User.findByIdAndUpdate(userId, {
+        username,
+        email,
+        reviews,
+        address,
+        credits,
+        imageUrl,
+    })
         .then(
-            ({ username, email, reviews, address, credentials, imageUrl, ads }) => {
+            ({ username, email, reviews, address, credits, imageUrl, ads }) => {
+
                 res.status(200).json({
                     username,
+                    ads,
                     email,
                     reviews,
                     address,
-                    credentials,
+                    credits,
                     imageUrl,
                     ads
                 });
