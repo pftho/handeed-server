@@ -70,13 +70,14 @@ router.post('/', isAuthenticated, (req, res) => {
                 {
                     $push: { ads: newAd._id },
                 }
-            ).exec()
-            return newAd
+            ).exec();
+            //return newAd;
         })
         .then((newAd) =>
-            res
-                .status(201)
-                .json({ message: 'ad has successfully been created', _id: newAd._id })
+            res.status(201).json({
+                message: 'ad has successfully been created',
+                // _id: newAd._id,
+            })
         )
         .catch(() =>
             res.status(500).json({ message: 'error when creating the ad' })
@@ -99,13 +100,12 @@ router.get('/:adId', (req, res) => {
 const isOwner = async (req) => {
     const { adId } = req.params;
     const userId = req.payload._id;
-    
-    return await Ad.findById(adId)
-        .then((ad) => {
-            console.log('userId', userId)
-            console.log('ad owner', String(ad.owner))
-            return String(ad.owner) === userId
-        }) 
+
+    return await Ad.findById(adId).then((ad) => {
+        console.log('userId', userId);
+        console.log('ad owner', String(ad.owner));
+        return String(ad.owner) === userId;
+    });
 };
 
 router.put('/:adId/edit', isAuthenticated, async (req, res, next) => {
@@ -116,13 +116,13 @@ router.put('/:adId/edit', isAuthenticated, async (req, res, next) => {
         return;
     }
 
-    if(await isOwner(req)) {
+    if (await isOwner(req)) {
         Ad.findByIdAndUpdate(adId, req.body, { new: true })
-                    .populate('owner')
-                    .then((ad) => res.status(200).json(ad))
-                    .catch((error) => res.json(error));
+            .populate('owner')
+            .then((ad) => res.status(200).json(ad))
+            .catch((error) => res.json(error));
     } else {
-        res.redirect(303, '/ads')
+        res.redirect(303, '/ads');
     }
 });
 
@@ -134,15 +134,17 @@ router.delete('/:adId', isAuthenticated, async (req, res) => {
         return;
     }
 
-    if(await isOwner(req)) {
+    if (await isOwner(req)) {
         Ad.findByIdAndRemove(adId)
-                .then(() =>
-                    res.json({message: `Ad with ${adId} is removed successfully.`})
-                )
-                .catch((error) => res.json(error));
+            .then(() =>
+                res.json({
+                    message: `Ad with ${adId} is removed successfully.`,
+                })
+            )
+            .catch((error) => res.json(error));
     } else {
-        res.redirect(303, '/ads')
+        res.redirect(303, '/ads');
     }
 });
 
-module.exports = router;  
+module.exports = router;

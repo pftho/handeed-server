@@ -8,16 +8,24 @@ const chatSchema = new Schema(
             required: [true, 'chatname is required'],
         },
         sender: {
-            type: { type: Schema.Types.ObjectId, ref: 'User' },
+            type: Schema.Types.ObjectId,
+            ref: 'User',
             unique: true,
             required: true,
         },
-        sender: {
-            type: { type: Schema.Types.ObjectId, ref: 'User' },
+        receiver: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
             unique: true,
             required: true,
         },
 
+        receiver: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+            unique: true,
+        },
         ad: { type: Schema.Types.ObjectId, ref: 'Ad' },
         messages: [String],
     },
@@ -29,15 +37,11 @@ const chatSchema = new Schema(
 
 const Chat = model('Chat', chatSchema);
 
-chatSchema.index({ location: '2dsphere' });
-
 module.exports = Chat;
 
-
-// front side: call method to check if chat open call backend --> axios.get la method du dessus 
+// front side: call method to check if chat open call backend --> axios.get la method du dessus
 // it will be a useEffect in the ad detail page that will check if room exists, if so setIsChat visite = true
 // if  true = it was already opened so I don't use button (if in the front side to hide button and display chat)
 // if false -> call the GET create - axios.get in the same place were I decrement
-
 
 //in socket io server when someones joins the room, check that the room exists in db w

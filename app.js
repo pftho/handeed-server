@@ -30,7 +30,6 @@ app.use('/api', isAuthenticated, profileRoute);
 const adRoutes = require('./routes/ad.routes');
 app.use('/ads', adRoutes);
 
-
 const chatModel = require('./routes/chat.routes');
 app.use('/api', chatModel);
 
