@@ -20,8 +20,6 @@ const isAuthenticated = jwt({
     getToken: getTokenFromHeaders,
 });
 
-
 module.exports = {
     isAuthenticated,
-    //isOwner,
 };

@@ -106,7 +106,7 @@ router.post('/login', (req, res) => {
 
     //User in DB check
     User.findOne({ email })
-        //.populate('ads')
+        .populate('ads')
         .then((foundUser) => {
             if (!foundUser) {
                 res.status(400).json({
@@ -143,6 +143,7 @@ router.post('/login', (req, res) => {
 
 // VERIFY - POST
 router.get('/verify', isAuthenticated, (req, res) => {
+    console.log(req.payload)
     res.status(200).json(req.payload);
 });
 
