@@ -49,20 +49,21 @@ module.exports = (app) => {
 
     io.on('connection', (socket) => {
         socket.on('join_room', (data) => {
-            //pass the user id in the useEffect line 15 in Chat.js using authcontext
-            //chec that I have a chat that matched adid Chat.find({ad}) and that recipient = me or sender = me -> true I have a room -> I want to send messages on the socket
+            // const Chat = require('../models/Chat.model');
+            // Chat.findById(data).then(console.log(data));
+            // get in db, chat.findbyid(data), if messages in the chat:
             // create a new even -> sync_messages -> send full list of messages from the chat
-            //front side needs to listen and set the chat to listen for it
+            //front side needs to listen and set the chat to listen for it -> il faudra listen pour faire un setchat
+
             socket.join(data);
             console.log(`a user connected: ${socket.id} joined room: ${data}`);
         });
 
         socket.on('send_message', (data) => {
-            console.log(data);
+            console.log('rjhdrkguh', data.room);
             socket.to(data.room).emit('receive_message', data);
-            //send id and user id and know if sender or reciver
-            //find the right chat
-            // Chat.find() -> push message
+            // chat.findbyif(data.room)
+            //uodate it to add messages
         });
 
         socket.on('disconnect', () => {

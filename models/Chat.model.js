@@ -19,15 +19,8 @@ const chatSchema = new Schema(
             unique: true,
             required: true,
         },
-
-        receiver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-            required: true,
-            unique: true,
-        },
         ad: { type: Schema.Types.ObjectId, ref: 'Ad' },
-        messages: [String],
+        messages: [new Schema({ author: String, message: String, time: Date })],
     },
 
     {

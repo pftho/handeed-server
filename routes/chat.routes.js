@@ -4,7 +4,17 @@ const Chat = require('../models/Chat.model');
 const Ad = require('../models/Ad.model');
 const router = express.Router();
 const { isAuthenticated } = require('../middleware/jwt.middleware');
-const axios = require('axios');
+
+const isOwner = async (req) => {
+    const { adId } = req.params;
+    const userId = req.payload._id;
+
+    return await Ad.findById(adId).then((ad) => {
+        console.log('userId', userId);
+        console.log('ad owner', String(ad.owner));
+        return String(ad.owner) === userId;
+    });
+};
 
 router.post('/contact', isAuthenticated, async (req, res) => {
     try {
@@ -24,30 +34,34 @@ router.post('/contact', isAuthenticated, async (req, res) => {
             });
         });
     } catch (err) {
-        res.status(500).json({ message: 'error when creating the ad' });
+        console.log(err);
+        res.status(500).json({ message: 'error when creating the chat' });
     }
 });
 
-// back: GET /adId + token to see what user is connected
-//-->  check if chat in db with sender === curent user
-//-> if ad is mine, check if recipient id === my id
-// if add not mine --> check if sender === me -> return true false chat
-
-router.get('/chat/:adId', async (req, res) => {
+router.get('/:adId', isAuthenticated, async (req, res) => {
     const { adId } = req.params;
     const userId = req.payload._id;
 
-    // const isOwner = async (req) => {
-    //     return await Ad.findById(adId).then((ad) => {
-    //         console.log('userId', userId);
-    //         console.log('ad owner', String(ad.owner));
-    //         return String(ad.owner) === userId;
-    //     });
-    // };
-
-    const senderIsUser = await Chat.find({ sender: userId });
-    if (senderIsUser) {
-        res.json;
+    console.log('GNI', userId, adId, await isOwner(req));
+    if (await isOwner(req)) {
+        Chat.find({ receiver: userId, ad: adId })
+            .populate('sender')
+            .populate('receiver')
+            .then((ads) => {
+                console.log('BLIH', ads, userId, adId);
+                res.status(200).json(ads);
+            })
+            .catch((error) => res.json(error));
+    } else {
+        Chat.find({ sender: userId, ad: adId })
+            .populate('sender')
+            .populate('receiver')
+            .then((ads) => {
+                console.log('BLUH', ads, userId, adId);
+                res.status(200).json(ads);
+            })
+            .catch((error) => res.json(error));
     }
 });
 
