@@ -18,24 +18,26 @@ router.post('/signup', async (req, res) => {
             password === '' ||
             address === ''
         ) {
-            res.status(400).json({ message: 'All fields are mandatory' });
+            res.status(400).json({ errorMessage: 'All fields are mandatory' });
             return;
         }
 
         //password check
         const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-        if (!passwordRegex) {
+        if (!passwordRegex.test(password)) {
             res.status(400).json({
-                message:
+                errorMessage:
                     'Please enter a password with at least 6 characters, one number, one lowercase and one uppercase letter.',
             });
             return;
         }
 
         //email check
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-        if (!emailRegex) {
-            res.status(400).json({ message: 'Please enter a valid email' });
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!emailRegex.test(email)) {
+            res.status(400).json({
+                errorMessage: 'Please enter a valid email',
+            });
             return;
         }
 
@@ -51,7 +53,7 @@ router.post('/signup', async (req, res) => {
         const userByEmail = await User.findOne({ email });
         if (userByEmail) {
             res.status(400).json({
-                message:
+                errorMessage:
                     'You already have an account, please go to the Login page',
             });
             return;
@@ -60,7 +62,7 @@ router.post('/signup', async (req, res) => {
         const userByUsername = await User.findOne({ username });
         if (userByUsername) {
             res.status(400).json({
-                message: 'User name already in use',
+                errorMessage: 'User name already in use',
             });
             return;
         }
@@ -89,7 +91,7 @@ router.post('/signup', async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ errorMessage: 'Internal Server Error' });
     }
 });
 
@@ -99,7 +101,7 @@ router.post('/login', (req, res) => {
 
     //check if all fields are completed
     if (email === '' || password === '') {
-        res.status(400).json({ message: 'All fields are mandatory' });
+        res.status(400).json({ errorMessage: 'All fields are mandatory' });
         return;
     }
 
@@ -109,7 +111,7 @@ router.post('/login', (req, res) => {
         .then((foundUser) => {
             if (!foundUser) {
                 res.status(400).json({
-                    message: 'No account found with this email address',
+                    errorMessage: 'No account found with this email address',
                 });
                 return;
             }
@@ -132,7 +134,9 @@ router.post('/login', (req, res) => {
                 //Send token as response
                 res.status(200).json({ authToken: authToken });
             } else {
-                res.status(401).json({ message: 'Unable to authenticate' });
+                res.status(401).json({
+                    errorMessage: 'Unable to authenticate',
+                });
             }
         })
         .catch((err) =>
