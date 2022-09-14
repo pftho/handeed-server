@@ -71,12 +71,11 @@ router.post('/', isAuthenticated, (req, res) => {
                     $push: { ads: newAd._id },
                 }
             ).exec();
-            //return newAd;
+            return newAd;
         })
         .then((newAd) =>
-            res.status(201).json({
-                message: 'ad has successfully been created',
-                // _id: newAd._id,
+            res.status(201)
+                .json({ message: 'ad has successfully been created', _id: newAd._id 
             })
         )
         .catch(() =>
