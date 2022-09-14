@@ -20,7 +20,7 @@ const userSchema = new Schema(
         reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
         address: String,
         messages: [{ type: Schema.Types.ObjectId, ref: 'Messages' }],
-        credentials: {
+        credits: {
             type: Number,
             default: 3,
         },
