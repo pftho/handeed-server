@@ -43,13 +43,11 @@ router.get('/:adId', isAuthenticated, async (req, res) => {
     const { adId } = req.params;
     const userId = req.payload._id;
 
-    console.log('GNI', userId, adId, await isOwner(req));
     if (await isOwner(req)) {
         Chat.find({ receiver: userId, ad: adId })
             .populate('sender')
             .populate('receiver')
             .then((ads) => {
-                console.log('BLIH', ads, userId, adId);
                 res.status(200).json(ads);
             })
             .catch((error) => res.json(error));
