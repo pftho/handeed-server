@@ -17,7 +17,17 @@ const chatSchema = new Schema(
             required: true,
         },
         ad: { type: Schema.Types.ObjectId, ref: 'Ad' },
-        messages: [new Schema({ author: String, message: String, time: Date })],
+        messages: [
+            new Schema({
+                author: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true,
+                },
+                message: String,
+                time: Date,
+            }),
+        ],
     },
 
     {

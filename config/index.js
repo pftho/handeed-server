@@ -50,8 +50,8 @@ module.exports = (app) => {
             console.log(`a user connected: ${socket.id} joined room: ${room}`);
 
             Chat.findById(room).then((foundRoom) => {
+                // console.log(foundRoom);
                 socket.emit('sync_messages', foundRoom.messages);
-                console.log(foundRoom.messages);
             });
             // get in db, chat.findbyid(data), if messages in the chat:
             // create a new even -> sync_messages -> send full list of messages from the chat
@@ -59,13 +59,18 @@ module.exports = (app) => {
         });
 
         socket.on('send_message', (data) => {
-            socket.to(data.room).emit('receive_message', data);
+            // console.log(data);
             Chat.findByIdAndUpdate(
                 { _id: data.room },
                 {
                     $push: { messages: data },
                 }
-            ).exec();
+            ).then((chat) => {
+                io.in(data.room).emit(
+                    'receive_message',
+                    chat.messages[chat.messages.length - 1]
+                );
+            });
 
             //uodate it to add messages
         });
