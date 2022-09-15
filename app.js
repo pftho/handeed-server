@@ -21,19 +21,6 @@ const { isAuthenticated } = require('./middleware/jwt.middleware');
 const allRoutes = require('./routes/index.routes');
 app.use('/api', allRoutes);
 
-const authRoutes = require('./routes/auth.routes');
-app.use('/auth', authRoutes);
-
-const profileRoute = require('./routes/profile.routes');
-app.use('/api', isAuthenticated, profileRoute);
-
-const adRoutes = require('./routes/ad.routes');
-app.use('/ads', adRoutes);
-
-const chatModel = require('./routes/chat.routes');
-app.use('/api/chat', chatModel);
-
-
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);
 
