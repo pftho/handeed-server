@@ -122,7 +122,7 @@ router.put('/:adId/edit', isAuthenticated, async (req, res, next) => {
             .then((ad) => res.status(200).json(ad))
             .catch((error) => res.json(error));
     } else {
-        res.redirect(303, '/ads');
+        res.redirect(303, '/api/ads');
     }
 });
 
@@ -143,7 +143,7 @@ router.delete('/:adId', isAuthenticated, async (req, res) => {
             )
             .catch((error) => res.json(error));
     } else {
-        res.redirect(303, '/ads');
+        res.redirect(303, '/api/ads');
     }
 });
 
