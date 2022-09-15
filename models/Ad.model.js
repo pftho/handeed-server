@@ -50,10 +50,6 @@ const adSchema = new Schema(
             required: true,
         },
         owner: { type: Schema.Types.ObjectId, ref: 'User' },
-        city: {
-            type: String,
-            required: true,
-        },
         image: {
             type: String,
             default:

@@ -4,6 +4,7 @@ const User = require('../models/User.model');
 const router = express.Router();
 const { isAuthenticated } = require('../middleware/jwt.middleware');
 const fileUploader = require('../config/cloudinary.config');
+const axios = require('axios');
 
 //GET - Display user Info
 router.get('/user/:userId', (req, res) => {
@@ -86,10 +87,23 @@ router.put('/user/:userId', (req, res) => {
         .catch((err) => console.log(err));
 });
 
+
+//get coordinates
+const convertAddress = async (address) => {
+    const MAPBOX_URL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?limit=1&proximity=ip&types=place%2Cpostcode%2Caddress&access_token=${process.env.MAPBOX_TOKEN}`;
+    const response = await axios.get(MAPBOX_URL);
+    const coordinates = response.data.features[0].center;
+    return coordinates;
+};
+
 router.get('/location', async (req, res) => {
-    const lat = req.query.lat;
-    const lng = req.query.lng;
-    const radius = req.query.rad ? parseInt(req.query.rad) : 5000;
+
+    const address = req.query.address;
+    const coords = await convertAddress(address)
+
+    const lat = coords[1];
+    const lng = coords[0]; 
+    const radius = req.query.rad ? parseInt(req.query.radius) : 10000;
 
     if (lat.length === 0 || lng.length === 0) {
         res.send('Wrong parameters');
@@ -105,11 +119,11 @@ router.get('/location', async (req, res) => {
                 },
             },
         },
-    });
+    }).populate('ads');
 
-    res.json({
-        ...users,
-    });
+    res.json(
+        users
+    );
 });
 
 module.exports = router;
