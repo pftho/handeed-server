@@ -89,6 +89,45 @@ const ads = [
         city: 'Paris',
         image: 'https://images1.vinted.net/t/02_021ed_MbKjAdxKekGziZdpcmkR6nXE/f800/1656775989.jpeg?s=fd86f92a4375791d798c20009b127dde5d2c1698',
     },
+    {
+        title: 'Flower printed blouse',
+        description:
+            'Pretty little blouse you can wear with anything',
+        brand: 'Zara',
+        size: 'XS',
+        category: 'Top',
+        condition: 'Brand New',
+        status: 'Available',
+        owner: '631d230ccab84d0906e126ca',
+        city: 'Paris',
+        image: 'https://images1.vinted.net/t/02_01a44_xHAHc3spefywm7sfep4nw7Kf/f800/1663310370.jpeg?s=c8f04d5863a14b5bebfbdf309acab004164562f0',
+    },
+    {
+        title: 'Denim jacket',
+        description:
+            "Levi's vintage denim jacket, barely worn.",
+        brand: "Levi's",
+        size: 'L',
+        category: 'Jacket',
+        condition: 'Good Condition',
+        status: 'Reserved',
+        owner: '631d230ccab84d0906e126ca',
+        city: 'Paris',
+        image: 'https://images1.vinted.net/t/02_00af4_LigEnB5BCoS5BnN4WsPFzA8i/f800/1662465448.jpeg?s=30e2003d8bcd068d206f74cf72b3dbbff04f02c6',
+    },
+    {
+        title: 'Nike bra',
+        description:
+            "Nike sports bra that doesn't fit me anymore",
+        brand: 'Nike',
+        size: 'M',
+        category: 'Sport',
+        condition: 'Like New',
+        status: 'Available',
+        owner: '631d230ccab84d0906e126ca',
+        city: 'Paris',
+        image: 'https://images1.vinted.net/t/02_020bb_cK1LbeaQD9CTF3TRJ2Fo6y6S/f800/1663076747.jpeg?s=0b620e6bfa205be9600697da5caf588387692241',
+    },
 ];
 
 Ad.insertMany(ads)
